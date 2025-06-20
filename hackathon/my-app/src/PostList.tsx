@@ -14,6 +14,7 @@ interface Post {
   likes_count: number;
   reply_count: number;
   is_liked_by_me: boolean;
+  profile_image_url?: string;
 }
 
 const timeAgo = (dateString: string): string => {
@@ -34,6 +35,8 @@ const timeAgo = (dateString: string): string => {
     return `${days}日前`;
   }
 };
+
+const DEFAULT_PROFILE_IMAGE_URL = 'https://firebasestorage.googleapis.com/v0/b/term7-haruto-imamura.firebasestorage.app/o/default_user.png?alt=media&token=a157c0ae-250b-4f51-9b0f-e10e31174f7e'
 
 const PostList: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -128,7 +131,11 @@ const PostList: React.FC = () => {
           {posts.map((post) => (
             <li key={post.id} className="post-item">
               <div className="post-avatar">
-                <div className="avatar-placeholder"></div>
+                <img
+                  src={post.profile_image_url || DEFAULT_PROFILE_IMAGE_URL}
+                  alt={`${post.username}のプロフィール画像`}
+                  className="avatar-image"
+                />
               </div>
               <div className="post-content-wrapper">
                 <Link to={`/post/${post.id}`} className="post-link-area"> 
