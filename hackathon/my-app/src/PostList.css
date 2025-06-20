@@ -1,0 +1,110 @@
+/* src/PostList.css */
+
+.post-list-container {
+    max-width: 600px;
+    margin: 20px auto;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    background-color: #fff;
+}
+
+.post-list-container h2 {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.loading-message,
+.error-message {
+    padding: 20px;
+    text-align: center;
+    color: #555;
+}
+
+.posts-feed {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.post-item {
+    display: flex;
+    padding: 15px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.post-item:last-child {
+    border-bottom: none;
+}
+
+.post-avatar {
+    width: 50px;
+    height: 50px;
+    margin-right: 15px;
+}
+
+.avatar-placeholder {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: #f0f0f0;
+}
+
+.post-content-wrapper {
+    flex-grow: 1;
+}
+
+.post-header {
+    display: flex;
+    align-items: baseline;
+    margin-bottom: 5px;
+}
+
+.post-user-id {
+    font-weight: bold;
+    color: #333;
+    font-size: 0.9rem;
+    margin-right: 5px;
+}
+
+.post-timestamp {
+    font-size: 0.8rem;
+    color: #777;
+}
+
+.post-text {
+    font-size: 1rem;
+    line-height: 1.4;
+    color: #333;
+    margin-bottom: 10px;
+    word-break: break-word;
+}
+
+.post-actions {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.action-button {
+    background: none;
+    border: none;
+    padding: 5px 0;
+    color: #555;
+    cursor: pointer;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.action-button:hover {
+    color: #007bff; 
+}
+
+.action-button span {
+    line-height: 1;
+}
