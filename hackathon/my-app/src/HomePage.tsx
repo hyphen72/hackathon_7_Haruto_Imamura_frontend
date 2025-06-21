@@ -16,6 +16,8 @@ interface UserProfileData {
 }
 
 const HomePage: React.FC = () => {
+    const [searchKeyword, setSearchKeyword] = useState<string>('');
+    const [displayedSearchKeyword, setDisplayedSearchKeyword] = useState<string>('');
     const [loginUser, setLoginUser] = useState(auth.currentUser);
     const navigate = useNavigate();
     const [userProfileData, setUserProfileData] = useState<UserProfileData | null>(null);
@@ -35,7 +37,13 @@ const HomePage: React.FC = () => {
         });
         return () => unsubscribe();
     }, []);
-
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchKeyword(e.target.value);
+    };
+    const handleSearchSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        setDisplayedSearchKeyword(searchKeyword);
+    };
     const fetchUserProfile = async (user: typeof auth.currentUser) => {
         if (!user) return;
 
@@ -117,11 +125,19 @@ const HomePage: React.FC = () => {
                 <div className="timeline-header">
                     <h2>最新の投稿</h2>
                 </div>
-                <PostList />
+                <PostList searchKeyword={displayedSearchKeyword}/>
             </main>
             <aside className="right-sidebar">
                 <div className="search-bar">
-                    <input type="text" placeholder="キーワード検索" />
+                    <form onSubmit={handleSearchSubmit} className="search-form-sidebar"> 
+                        <input
+                            type="text"
+                            placeholder="キーワード検索"
+                            value={searchKeyword} 
+                            onChange={handleSearchChange}
+                            className="search-input-sidebar"
+                        />
+                    </form>
                 </div>
             </aside>
 

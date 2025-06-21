@@ -1,31 +1,30 @@
 body {
     margin: 0;
     font-family: Arial, sans-serif;
-    background-color: #f0f2f5; /* ページの背景色 */
+    background-color: #f0f2f5;
 }
 
 .layout-container {
-    display: flex; /* Flexboxでサイドバーとメインコンテンツを横に並べる */
-    min-height: 100vh; /* 画面の高さいっぱい */
-    max-width: 1300px; /* 全体の最大幅 */
-    margin: 0 auto; /* 中央寄せ */
-    background-color: #fff; /* コンテナの背景色 */
+    display: flex;
+    min-height: 100vh;
+    max-width: 1300px;
+    margin: 0 auto; 
+    background-color: #fff; 
     border-left: 1px solid #eee;
     border-right: 1px solid #eee;
 }
 
-/* 左サイドバー */
 .left-sidebar {
-    width: 250px; /* 固定幅 */
+    width: 250px;
     padding: 20px;
     border-right: 1px solid #eee;
     display: flex;
-    flex-direction: column; /* 縦並び */
-    align-items: flex-start; /* 左寄せ */
-    position: sticky; /* スクロールしても固定 */
+    flex-direction: column; 
+    align-items: flex-start;
+    position: sticky;
     top: 0;
-    height: 100vh; /* 画面の高さに合わせる */
-    overflow-y: auto; /* コンテンツが多ければスクロール */
+    height: 100vh; 
+    overflow-y: auto; 
 }
 
 .sidebar-header {
@@ -33,7 +32,7 @@ body {
 }
 
 .logo-link {
-    font-size: 2.5em; /* Xのロゴの大きさ */
+    font-size: 2.5em;
     font-weight: bold;
     color: #000;
     text-decoration: none;
@@ -57,18 +56,17 @@ body {
     text-decoration: none;
     color: #333;
     font-size: 1.2em;
-    border-radius: 9999px; /* 角丸ボタン風 */
+    border-radius: 9999px; 
     transition: background-color 0.2s ease;
 }
 
 .nav-link:hover {
-    background-color: #e0f2fe; /* ホバー時の背景色 */
-    color: #1da1f2; /* ホバー時の文字色 */
+    background-color: #e0f2fe; 
+    color: #1da1f2; 
 }
 
-/* ユーザーセクション（左サイドバー下部） */
 .sidebar-user-section {
-    margin-top: auto; /* 常に下部に配置 */
+    margin-top: auto;
     width: 100%;
     padding-top: 20px;
     border-top: 1px solid #eee;
@@ -97,14 +95,14 @@ body {
 }
 
 .logout-button {
-    background-color: #dc3545; /* 赤色のボタン */
+    background-color: #dc3545;
     color: white;
     padding: 10px 20px;
     border: none;
     border-radius: 9999px;
     cursor: pointer;
     font-size: 1em;
-    width: 80%; /* 幅を調整 */
+    width: 80%; 
     transition: background-color 0.2s ease;
 }
 
@@ -154,14 +152,12 @@ body {
     background-color: #cce7fa;
 }
 
-
-/* 中央のメインコンテンツエリア */
 .main-content-area {
-    flex-grow: 1; /* 残りのスペースを全て占める */
-    max-width: 600px; /* タイムラインの最大幅 */
+    flex-grow: 1; 
+    max-width: 600px; 
     border-right: 1px solid #eee;
-    overflow-y: auto; /* タイムラインのスクロール */
-    position: relative; /* 投稿ボタンの配置用 */
+    overflow-y: auto; 
+    position: relative; 
 }
 
 .timeline-header {
@@ -170,30 +166,59 @@ body {
     background-color: white;
     padding: 15px;
     border-bottom: 1px solid #eee;
-    z-index: 10; /* 他のコンテンツの上に表示 */
+    z-index: 10; 
     font-size: 1.2em;
     font-weight: bold;
 }
 
-/* 右サイドバー */
 .right-sidebar {
-    width: 350px; /* 固定幅 */
+    width: 350px;
     padding: 20px;
-    position: sticky;
-    top: 0;
-    height: 100vh;
-    overflow-y: auto;
-}
-
-.search-bar input {
-    width: calc(100% - 30px);
-    padding: 10px 15px;
-    border-radius: 9999px;
-    border: 1px solid #ddd;
     background-color: #f0f2f5;
-    margin-bottom: 20px;
 }
 
+.search-bar {
+    padding: 15px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.search-form-sidebar {
+    display: block; 
+    border-radius: 25px;
+    overflow: hidden;
+    background-color: white; 
+    position: relative;
+    border: 1px solid #ddd;
+    transition: box-shadow 0.2s ease-in-out, border-color 0.2s ease-in-out;
+}
+
+.search-form-sidebar:focus-within { 
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+.search-input-sidebar {
+    width: 100%;
+    padding: 12px 20px;
+    border: none;
+    background-color: transparent;
+    font-size: 1.1rem;
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color 0.2s ease-in-out;
+    border-radius: 25px;
+}
+
+.search-input-sidebar:-webkit-autofill,
+.search-input-sidebar:-webkit-autofill:hover,
+.search-input-sidebar:-webkit-autofill:focus,
+.search-input-sidebar:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0px 1000px white inset !important;
+    background-color: white !important;
+    color: inherit !important;
+}
 .trends-section {
     background-color: #f7f9fa;
     border-radius: 12px;
@@ -223,44 +248,95 @@ body {
     text-decoration: underline;
 }
 
-/* 投稿ボタン（画面右下固定） */
 .floating-post-button-container {
-    position: fixed; /* 画面に固定 */
+    position: fixed;
     bottom: 20px;
     right: 20px;
-    z-index: 1000; /* 最前面に表示 */
+    z-index: 1000;
 }
 
-/* レスポンシブ対応（簡易版） */
-@media (max-width: 1000px) {
-    .right-sidebar {
-        display: none; /* 小画面では右サイドバーを非表示 */
-    }
+@media (max-width: 1024px) { 
     .left-sidebar {
-        width: 80px; /* ナビゲーションアイコンのみに */
-        padding: 10px;
-    }
-    .nav-link {
-        justify-content: center; /* アイコンを中央に */
-        padding: 10px;
-    }
-    .nav-link span { /* テキストを非表示にする場合はここを調整 */
-        display: none;
+        width: 80px;
+        padding: 15px 10px;
     }
     .logo-link {
-        font-size: 1.5em; /* ロゴを小さく */
+        font-size: 1.8rem;
     }
-    .sidebar-user-section, .sidebar-auth-buttons {
-        display: none; /* ユーザー情報も非表示に */
+    .nav-link {
+        font-size: 0.9rem;
+        padding: 8px 10px;
+        justify-content: center; 
+    }
+    .nav-link span {
+        display: none;
+    }
+    .sidebar-user-section {
+        flex-direction: column;
+    }
+    .user-display-name, .logout-button {
+        display: none;
     }
 }
 
-@media (max-width: 600px) {
-    .left-sidebar {
-        display: none; /* さらに小さい画面では左サイドバーも非表示にし、モバイルナビゲーションを検討 */
-    }
+@media (max-width: 768px) {
     .layout-container {
+        flex-direction: column;
+    }
+    .left-sidebar, .main-content-area, .right-sidebar {
+        width: 100%;
         border-left: none;
         border-right: none;
+        box-shadow: none;
+    }
+    .left-sidebar {
+        flex-direction: row;
+        justify-content: space-around;
+        padding: 10px;
+        border-bottom: 1px solid #e0e0e0;
+        position: sticky;
+        top: 0;
+        z-index: 20;
+    }
+    .sidebar-header {
+        display: none;
+    }
+    .sidebar-nav-links {
+        display: flex;
+        justify-content: space-around;
+        flex-grow: 0;
+    }
+    .sidebar-nav-links li {
+        margin-bottom: 0;
+    }
+    .nav-link {
+        padding: 5px 10px;
+        font-size: 0.8rem;
+        flex-direction: column;
+    }
+    .nav-link span { 
+        display: block;
+        font-size: 0.7rem;
+    }
+    .sidebar-user-section, .sidebar-auth-buttons {
+        display: none;
+    }
+
+    .timeline-header {
+        padding: 15px;
+    }
+
+    .right-sidebar {
+        order: -1;
+        padding: 10px;
+        background-color: #ffffff;
+        border-bottom: 1px solid #e0e0e0;
+    }
+    .search-bar {
+        padding: 10px;
+    }
+    .search-input-sidebar {
+        padding: 10px 15px;
+        font-size: 0.95rem;
     }
 }

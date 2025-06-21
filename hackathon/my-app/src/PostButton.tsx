@@ -3,6 +3,7 @@ import { User } from 'firebase/auth';
 import { fireAuth } from './firebase';
 import {app} from './firebaseConfig'
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage'; 
+import './PostButton.css'; 
 
 const PostButton: React.FC = () => {
     const [showModal, setShowModal] = useState(false);
@@ -100,74 +101,87 @@ const PostButton: React.FC = () => {
             handleCloseModal();
         }
     };
-return (
-    <>
-        <button
-        onClick={handleOpenModal}
-        className="post-create-button"
-        disabled={isLoading}
-        >
-        ポストする
-        </button>
-        {showModal && (
-        <div className="modal-overlay">
-            <div className="modal-content">
-            <h2>新しいポストを作成</h2>
-            {error && <p className="error-message">{error}</p>}
-            <textarea
-                value={postContent}
-                onChange={(e) => setPostContent(e.target.value)}
-                placeholder="今何してる？"
-                rows={4} 
-                maxLength={280}
-                className="post-textarea"
+    return (
+        <>
+            <button
+                onClick={handleOpenModal}
+                className="post-create-main-button"
                 disabled={isLoading}
-            />
-
-            <div className="image-input-section" style={{ marginTop: '15px' }}>
-                <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageChange}
-                    disabled={isLoading}
-                    style={{ display: 'none' }}
-                    id="image-upload-input"
-                />
-                <label htmlFor="image-upload-input" className="choose-image-button">
-                    {selectedImageFile ? '画像を変更' : '画像を選択'}
-                </label>
-                {selectedImageFile && (
-                    <button onClick={handleRemoveImage} className="remove-image-button" disabled={isLoading}>
-                        画像を取り消し
-                    </button>
-                )}
-                {imagePreviewUrl && (
-                    <div className="image-preview-container" style={{ marginTop: '10px', textAlign: 'center' }}>
-                        <img src={imagePreviewUrl} alt="投稿画像プレビュー" style={{ maxWidth: '100%', maxHeight: '200px', objectFit: 'contain', border: '1px solid #eee' }} />
+            >
+                <svg className="post-create-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                </svg>
+                ポストする
+            </button>
+            {showModal && (
+                <div className="post-modal-overlay">
+                    <div className="post-modal-content">
+                        <h2 className="post-modal-title">新しいポストを作成</h2>
+                        {error && <p className="post-error-message">{error}</p>}
+                        <textarea
+                            value={postContent}
+                            onChange={(e) => setPostContent(e.target.value)}
+                            placeholder="今何してる？"
+                            rows={5}
+                            maxLength={280}
+                            className="post-modal-textarea"
+                            disabled={isLoading}
+                        />
+                        <div className="post-image-input-section">
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleImageChange}
+                                disabled={isLoading}
+                                className="hidden-file-input"
+                                id="image-upload-input"
+                            />
+                            <label
+                                htmlFor="image-upload-input"
+                                className="post-choose-image-button"
+                            >
+                                <svg className="post-image-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                    <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-4 4 4 4-4V5h-2a1 1 0 100 2h2v6zm-4-8a2 2 0 11-4 0 2 2 0 014 0z" clipRule="evenodd" />
+                                </svg>
+                                {selectedImageFile ? '画像を変更' : '画像を選択'}
+                            </label>
+                            {selectedImageFile && (
+                                <button
+                                    onClick={handleRemoveImage}
+                                    className="post-remove-image-button"
+                                    disabled={isLoading}
+                                >
+                                    画像を取り消し
+                                </button>
+                            )}
+                            {imagePreviewUrl && (
+                                <div className="post-image-preview-container">
+                                    <img src={imagePreviewUrl} alt="投稿画像プレビュー" className="post-image-preview" />
+                                </div>
+                            )}
+                        </div>
+                        <div className="post-modal-actions">
+                            <button
+                                onClick={handleCloseModal}
+                                className="post-cancel-button"
+                                disabled={isLoading}
+                            >
+                                キャンセル
+                            </button>
+                            <button
+                                onClick={handlePostSubmit}
+                                className={`post-submit-button ${isLoading || (postContent.trim() === '' && !selectedImageFile) ? 'post-button-disabled' : ''}`}
+                                disabled={isLoading || (postContent.trim() === '' && !selectedImageFile)}
+                            >
+                                {isLoading ? '投稿中...' : '投稿'}
+                            </button>
+                        </div>
                     </div>
-                )}
-            </div>
-            <div className="modal-actions">
-                <button
-                    onClick={handlePostSubmit} 
-                    className="submit-post-button"
-                    disabled={isLoading || (postContent.trim() === '')}
-                >
-                {isLoading ? '投稿中...' : '投稿'}
-                </button>
-                <button
-                    onClick={handleCloseModal}
-                    className="cancel-post-button"
-                    disabled={isLoading}
-                >
-                キャンセル
-                </button>
-            </div>
-            </div>
-        </div>
-        )}
-    </>
+                </div>
+            )}
+        </>
     );
 };
+
 
 export default PostButton;
