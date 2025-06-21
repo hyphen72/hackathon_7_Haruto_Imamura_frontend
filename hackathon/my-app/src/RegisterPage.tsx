@@ -53,14 +53,16 @@ const RegisterPage: React.FC = () => {
             if (!firebaseUser) {
                 throw new Error("Firebase ユーザーオブジェクトの取得に失敗しました。");
             }
+            console.log("Firebaseアカウント作成成功、ユーザーUID:", firebaseUser.uid);
             if (profileImageFile) {
                 const storageRef = ref(storage, `users/${firebaseUser.uid}/profile.jpg`);
                 const snapshot = await uploadBytes(storageRef, profileImageFile);
                 imageUrl = await getDownloadURL(snapshot.ref);
-                console.log('プロフィール画像がアップロードされました:', imageUrl);
-                setProfileImageUrl(imageUrl); // 画面に表示するために更新
+                setProfileImageUrl(imageUrl); 
             }
+            console.log("IDトークン取得開始...");
             const idToken = await firebaseUser.getIdToken();
+            console.log("バックエンドへのPOSTリクエスト送信開始...");
             const result = await fetch("https://hackathon-7-haruto-imamura-backend-212382913943.us-central1.run.app/user", {
                 method: "POST",
                 headers: {
@@ -68,7 +70,6 @@ const RegisterPage: React.FC = () => {
                     "Authorization": `Bearer ${idToken}`,
                 },
                 body: JSON.stringify({
-                    email: email,
                     username: user, 
                     profileImageUrl: imageUrl,
                 }),

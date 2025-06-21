@@ -5,6 +5,10 @@ import { fireAuth } from './firebase';
 import ReplyButton from './ReplyButton'; 
 import { Link } from 'react-router-dom';
 import LikeButton from './LikeButton';
+interface NullString {
+  String: string;
+  Valid: boolean;
+}
 
 interface Post {
   id: string;
@@ -14,7 +18,8 @@ interface Post {
   likes_count: number;
   reply_count: number;
   is_liked_by_me: boolean;
-  profile_image_url?: string;
+  profile_image_url?: NullString;
+  image_url?: NullString;
 }
 
 const timeAgo = (dateString: string): string => {
@@ -120,7 +125,6 @@ const PostList: React.FC = () => {
       </div>
     );
   }
-
   return (
     <div className="post-list-container">
       <h2>タイムライン</h2>
@@ -132,7 +136,11 @@ const PostList: React.FC = () => {
             <li key={post.id} className="post-item">
               <div className="post-avatar">
                 <img
-                  src={post.profile_image_url || DEFAULT_PROFILE_IMAGE_URL}
+                  src={
+                    (post.profile_image_url?.Valid && post.profile_image_url.String)
+                      ? post.profile_image_url.String
+                      : DEFAULT_PROFILE_IMAGE_URL
+                  }
                   alt={`${post.username}のプロフィール画像`}
                   className="avatar-image"
                 />
@@ -144,6 +152,15 @@ const PostList: React.FC = () => {
                     <span className="post-timestamp">・ {timeAgo(post.created_at)}</span>
                   </div>
                   <p className="post-text">{post.content}</p>
+                  {post.image_url?.Valid && post.image_url.String && (
+                    <div className="post-image-container">
+                      <img
+                        src={post.image_url.String}
+                        alt={`${post.username}の投稿画像`}
+                        className="post-image"
+                      />
+                    </div>
+                  )}
                 </Link>
                 <div className="post-actions">
                   <ReplyButton postId={post.id} />
