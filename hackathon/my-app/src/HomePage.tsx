@@ -23,12 +23,13 @@ const HomePage: React.FC = () => {
     const [userProfileData, setUserProfileData] = useState<UserProfileData | null>(null);
     const [isProfileLoading, setIsProfileLoading] = useState<boolean>(true);
     const DEFAULT_PROFILE_IMAGE_URL = 'https://firebasestorage.googleapis.com/v0/b/term7-haruto-imamura.firebasestorage.app/o/default_user.png?alt=media&token=a157c0ae-250b-4f51-9b0f-e10e31174f7e';
-
+    const [unreadNotificationsCount, setUnreadNotificationsCount] = useState<number | null>(null);
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, user => {
             setLoginUser(user);
             if (user) {
                 fetchUserProfile(user);
+                fetchUnreadNotificationsCount(user);
             } else {
                 setUserProfileData(null);
                 setIsProfileLoading(false);
@@ -36,6 +37,29 @@ const HomePage: React.FC = () => {
         });
         return () => unsubscribe();
     }, []);
+    const fetchUnreadNotificationsCount = async (user: typeof auth.currentUser) => {
+        if (!user) return;
+        try {
+            const idToken = await user.getIdToken();
+            const response = await fetch('https://hackathon-7-haruto-imamura-backend-212382913943.us-central1.run.app/notification/unread', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${idToken}` 
+                }
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || '未読通知数の取得に失敗しました');
+            }
+
+            const data = await response.json();
+            setUnreadNotificationsCount(data.count);
+        } catch (err: any) {
+            console.error("未読通知数の取得エラー:", err);
+        }
+    };
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchKeyword(e.target.value);
     };
@@ -90,9 +114,12 @@ const HomePage: React.FC = () => {
                 </div>
                 <ul className="sidebar-nav-links">
                     <li><Link to="/" className="nav-link">ホーム</Link></li>
-                    {/* <li><Link to="/notifications" className="nav-link">通知</Link></li> */}
-                    <li><Link to={`/profile/${loginUser?.uid || 'guest'}`} className="nav-link">プロフィール</Link></li>
-                    {/* プロフィール設定ページへのリンク */}
+                    <li><Link to="/notification" className="nav-link">
+                        通知
+                        {unreadNotificationsCount !== null && unreadNotificationsCount > 0 && (
+                            <span className="notification-badge">{unreadNotificationsCount}</span>
+                        )}
+                    </Link></li>
                     <li><Link to="/settings/profile" className="nav-link">プロフィール設定</Link></li>
                 </ul>
                 

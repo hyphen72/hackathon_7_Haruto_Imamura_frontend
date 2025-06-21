@@ -10,6 +10,7 @@ import PostDetailPage from './PostDetailPage';
 import ProfileSettings from './ProfileSetting';
 import ForgotPassword from './ForgotPassword'; 
 import ResetPassword from './ResetPassword';
+import NotificationsPage from './NotificationPage';
 
 const LoadingSpinner: React.FC = () => (
   <div style={{
@@ -48,6 +49,7 @@ function App() {
           <Route path="/settings/profile" element={isAuthenticated ? <ProfileSettings /> : <Navigate to="/login" replace />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/notification" element={<NotificationsPage />} />
           <Route path="*" element={<h2>ページが見つかりません (404)</h2>} />
         </Routes>
       </div>
