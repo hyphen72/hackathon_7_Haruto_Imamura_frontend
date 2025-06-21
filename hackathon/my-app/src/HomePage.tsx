@@ -28,10 +28,9 @@ const HomePage: React.FC = () => {
         const unsubscribe = onAuthStateChanged(auth, user => {
             setLoginUser(user);
             if (user) {
-                // ユーザーがログインしたらプロフィールデータをフェッチ
                 fetchUserProfile(user);
             } else {
-                setUserProfileData(null); // ログアウトしたらプロフィールデータをクリア
+                setUserProfileData(null);
                 setIsProfileLoading(false);
             }
         });
@@ -88,17 +87,13 @@ const HomePage: React.FC = () => {
         <div className="layout-container">
             <nav className="left-sidebar">
                 <div className="sidebar-header">
-                    <Link to="/" className="logo-link">X</Link> 
                 </div>
                 <ul className="sidebar-nav-links">
                     <li><Link to="/" className="nav-link">ホーム</Link></li>
-                    {/* <li><Link to="/explore" className="nav-link">話題を検索</Link></li> */}
                     {/* <li><Link to="/notifications" className="nav-link">通知</Link></li> */}
-                    {/* <li><Link to="/messages" className="nav-link">メッセージ</Link></li> */}
                     <li><Link to={`/profile/${loginUser?.uid || 'guest'}`} className="nav-link">プロフィール</Link></li>
                     {/* プロフィール設定ページへのリンク */}
                     <li><Link to="/settings/profile" className="nav-link">プロフィール設定</Link></li>
-                    {/* <li><Link to="/more" className="nav-link">もっと見る</Link></li> */}
                 </ul>
                 
                 {isProfileLoading ? (

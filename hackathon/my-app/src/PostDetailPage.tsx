@@ -4,7 +4,7 @@ import ReplyButton from './ReplyButton';
 import LikeButton from './LikeButton';
 import { User } from 'firebase/auth'; 
 import { fireAuth } from './firebase'; 
-import { Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 interface NullString {
     String: string;
     Valid: boolean;
@@ -29,6 +29,14 @@ const PostDetailPage: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [loggedInUser, setLoggedInUser] = useState<User | null>(null); 
+    const navigate = useNavigate();
+
+    const handleGoBack = () => {
+        navigate(-1);
+    };
+    const handleGoToList = () => {
+        navigate('/');
+    };
 
     useEffect(() => {
         const unsubscribe = fireAuth.onAuthStateChanged((user) => {
@@ -123,6 +131,8 @@ return (
         <div className="post-detail-page">
             <div className="original-post-section">
                 <h2>投稿詳細</h2>
+                <button onClick={handleGoBack}>前のページに戻る</button>
+                <button onClick={handleGoToList}>投稿一覧へ</button>
                 <div className="post-item">
                     <div className="post-avatar">
                         <img
@@ -157,19 +167,12 @@ return (
                             <span className="reply-count">
                                 {post.reply_count > 0 && post.reply_count}
                             </span>
-
                             <LikeButton
                                 postId={post.id}
                                 initialLikesCount={post.likes_count}
                                 initialIsLikedByMe={post.is_liked_by_me}
                                 onLikeToggle={handleLikeToggle}
                             />
-                            <button className="action-button retweet-button">
-                                <span aria-label="Retweet">🔁</span>
-                            </button>
-                            <button className="action-button share-button">
-                                <span aria-label="Share">📤</span>
-                            </button>
                         </div>
                     </div>
                 </div>
@@ -197,7 +200,7 @@ return (
                                     />
                                 </div>
                                 <div className="post-content-wrapper">
-                                    <Link to={`/post/${reply.id}`} className="post-link-area"> 
+                                    <Link to={`/post/${reply.id}`} className="post-link-area"style={{ textDecoration: 'none'}}> 
                                         <div className="post-header">
                                             <span className="post-username">{reply.username}</span>
                                             <span className="post-timestamp">・ {timeAgo(reply.created_at)}</span>
@@ -226,12 +229,6 @@ return (
                                             initialIsLikedByMe={reply.is_liked_by_me}
                                             onLikeToggle={handleLikeToggle}
                                         />
-                                        <button className="action-button retweet-button">
-                                            <span aria-label="Retweet">🔁</span>
-                                        </button>
-                                        <button className="action-button share-button">
-                                            <span aria-label="Share">📤</span>
-                                        </button>
                                     </div>
                                 </div>
                             </li>

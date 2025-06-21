@@ -150,7 +150,7 @@ const PostList: React.FC<PostListProps> = ({searchKeyword}) => {
                 />
               </div>
               <div className="post-content-wrapper">
-                <Link to={`/post/${post.id}`} className="post-link-area"> 
+                <Link to={`/post/${post.id}`} className="post-link-area"style={{ textDecoration: 'none'}}> 
                   <div className="post-header">
                     <span className="post-username">{post.username}</span>
                     <span className="post-timestamp">・ {timeAgo(post.created_at)}</span>
@@ -171,18 +171,12 @@ const PostList: React.FC<PostListProps> = ({searchKeyword}) => {
                   <span className="reply-count">
                     {post.reply_count > 0 && post.reply_count}
                   </span>
-                  <button className="action-button retweet-button">
-                    <span aria-label="Retweet">🔁</span>
-                  </button>
                   <LikeButton
                         postId={post.id}
                         initialLikesCount={post.likes_count}
                         initialIsLikedByMe={post.is_liked_by_me}
                         onLikeToggle={handleLikeToggle}
                     />
-                  <button className="action-button share-button">
-                    <span aria-label="Share">📤</span>
-                  </button>
                 </div>
               </div>
             </li>
