@@ -1,13 +1,14 @@
-// PostDetailPage.tsx の例
-
 import React, { useState, useEffect,useCallback } from 'react';
 import { useParams } from 'react-router-dom'; 
 import ReplyButton from './ReplyButton';
 import LikeButton from './LikeButton';
 import { User } from 'firebase/auth'; 
 import { fireAuth } from './firebase'; 
-import { Link } from 'react-router-dom';
-
+import { useNavigate, Link } from 'react-router-dom';
+interface NullString {
+    String: string;
+    Valid: boolean;
+}
 interface Post {
     id: string;
     username: string;
@@ -16,7 +17,10 @@ interface Post {
     likes_count: number;
     reply_count: number;
     is_liked_by_me: boolean;
+    profile_image_url?: NullString;
+    image_url?: NullString;
 }
+const DEFAULT_PROFILE_IMAGE_URL = 'https://firebasestorage.googleapis.com/v0/b/term7-haruto-imamura.firebasestorage.app/o/default_user.png?alt=media&token=a157c0ae-250b-4f51-9b0f-e10e31174f7e'
 
 const PostDetailPage: React.FC = () => {
     const { postId } = useParams<{ postId: string }>();
@@ -25,6 +29,14 @@ const PostDetailPage: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [loggedInUser, setLoggedInUser] = useState<User | null>(null); 
+    const navigate = useNavigate();
+
+    const handleGoBack = () => {
+        navigate(-1);
+    };
+    const handleGoToList = () => {
+        navigate('/');
+    };
 
     useEffect(() => {
         const unsubscribe = fireAuth.onAuthStateChanged((user) => {
@@ -119,9 +131,19 @@ return (
         <div className="post-detail-page">
             <div className="original-post-section">
                 <h2>投稿詳細</h2>
+                <button onClick={handleGoBack}>前のページに戻る</button>
+                <button onClick={handleGoToList}>投稿一覧へ</button>
                 <div className="post-item">
                     <div className="post-avatar">
-                        <div className="avatar-placeholder"></div>
+                        <img
+                            src={
+                            (post.profile_image_url?.Valid && post.profile_image_url.String)
+                                ? post.profile_image_url.String
+                                : DEFAULT_PROFILE_IMAGE_URL
+                                }
+                            alt={`${post.username}のプロフィール画像`}
+                            className="avatar-image"
+                        />
                     </div>
                     <div className="post-content-wrapper">
                         <div className="post-header">
@@ -129,6 +151,15 @@ return (
                             <span className="post-timestamp">・ {timeAgo(post.created_at)}</span>
                         </div>
                         <p className="post-text">{post.content}</p>
+                        {post.image_url?.Valid && post.image_url.String && (
+                            <div className="post-image-container">
+                                <img
+                                    src={post.image_url.String}
+                                    alt={`${post.username}の投稿画像`}
+                                    className="post-image"
+                                />
+                            </div>
+                        )}
                         <div className="post-actions">
                             <ReplyButton
                                 postId={post.id}
@@ -136,19 +167,12 @@ return (
                             <span className="reply-count">
                                 {post.reply_count > 0 && post.reply_count}
                             </span>
-
                             <LikeButton
                                 postId={post.id}
                                 initialLikesCount={post.likes_count}
                                 initialIsLikedByMe={post.is_liked_by_me}
                                 onLikeToggle={handleLikeToggle}
                             />
-                            <button className="action-button retweet-button">
-                                <span aria-label="Retweet">🔁</span>
-                            </button>
-                            <button className="action-button share-button">
-                                <span aria-label="Share">📤</span>
-                            </button>
                         </div>
                     </div>
                 </div>
@@ -165,15 +189,32 @@ return (
                         {replies.map((reply) => (
                             <li key={reply.id} className="reply-item post-item">
                                 <div className="post-avatar">
-                                    <div className="avatar-placeholder"></div>
+                                    <img
+                                        src={
+                                            (reply.profile_image_url?.Valid && reply.profile_image_url.String)
+                                                ? reply.profile_image_url.String
+                                                : DEFAULT_PROFILE_IMAGE_URL
+                                            }
+                                        alt={`${reply.username}のプロフィール画像`}
+                                        className="avatar-image"
+                                    />
                                 </div>
                                 <div className="post-content-wrapper">
-                                    <Link to={`/post/${reply.id}`} className="post-link-area"> 
+                                    <Link to={`/post/${reply.id}`} className="post-link-area"style={{ textDecoration: 'none'}}> 
                                         <div className="post-header">
                                             <span className="post-username">{reply.username}</span>
                                             <span className="post-timestamp">・ {timeAgo(reply.created_at)}</span>
                                         </div>
                                         <p className="post-text">{reply.content}</p>
+                                        {post.image_url?.Valid && post.image_url.String && (
+                                            <div className="post-image-container">
+                                                <img
+                                                    src={post.image_url.String}
+                                                    alt={`${post.username}の投稿画像`}
+                                                    className="post-image"
+                                                />
+                                            </div>
+                                        )}
                                     </Link>
                                     <div className="post-actions">
                                         <ReplyButton
@@ -188,12 +229,6 @@ return (
                                             initialIsLikedByMe={reply.is_liked_by_me}
                                             onLikeToggle={handleLikeToggle}
                                         />
-                                        <button className="action-button retweet-button">
-                                            <span aria-label="Retweet">🔁</span>
-                                        </button>
-                                        <button className="action-button share-button">
-                                            <span aria-label="Share">📤</span>
-                                        </button>
                                     </div>
                                 </div>
                             </li>

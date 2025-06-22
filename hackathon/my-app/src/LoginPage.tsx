@@ -94,6 +94,11 @@ const LoginPage: React.FC = () => {
                         {isLoading ? 'ログイン中...' : 'ログイン'}
                     </button>
                 </form>
+                <div className="mt-4 text-center">
+                    <Link to="/forgot-password" className="text-sm font-medium text-indigo-600 hover:text-indigo-500">
+                        パスワードを忘れた場合
+                    </Link>
+                </div>
                 <div className="mt-6 text-center">
                     <p className="text-sm text-gray-600">
                         アカウントをお持ちでないですか？{' '}
