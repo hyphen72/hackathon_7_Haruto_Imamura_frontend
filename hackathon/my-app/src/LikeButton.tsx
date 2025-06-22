@@ -51,7 +51,6 @@ const LikeButton: React.FC<LikeButtonProps> = ({ postId, initialLikesCount, init
                     post_id: postId
                 }),
             });
-
             if (!response.ok) {
                 setIsLikedByMe(previousIsLikedByMe);
                 setLikesCount(previousLikesCount);

@@ -1,4 +1,3 @@
-// NotificationsPage.tsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getAuth, onAuthStateChanged,} from "firebase/auth";
@@ -16,19 +15,29 @@ interface Notification {
 }
 export const generateNotificationMessage = (notification: Notification): string => {
     const sourceUsername = notification.sourceUsername;
+    let postContentText: string;
+    if (
+        typeof notification.postContent === 'object' &&
+        notification.postContent !== null &&
+        'String' in notification.postContent &&
+        typeof (notification.postContent as { String: string }).String === 'string'
+    ) {
+        postContentText = (notification.postContent as { String: string }).String;
+    } else if (notification.postContent === null) {
+        postContentText = '';
+    } else {
+        postContentText = notification.postContent;
+    }
+
     switch (notification.notificationType) {
         case 'like':
             return `${sourceUsername} さんがあなたの投稿にいいねしました。`;
         case 'reply':
             return `${sourceUsername} さんがあなたの投稿にリプライしました。`;
-        case 'follow':
-            return `${sourceUsername} さんがあなたをフォローしました。`;
         case 'warn':
-            return `あなたの投稿:${notification.postContent}において不適切な発言が見られました公序良俗に反する投稿はお控えください`;
+            return `あなたの投稿:${postContentText}において不適切な発言が見られました公序良俗に反する投稿はお控えください`;
         case 'delete':
-            return `あなたの投稿はガイドライン違反のため削除されました。詳細をご確認ください。`
-        case 'ban':
-            return `あなたのアカウントは重大な規約違反のため停止されました。詳細をご確認ください。`
+            return `あなたの投稿：${postContentText}はガイドライン違反のため削除されました。詳細をご確認ください。`
         default:
             return `新しい通知があります: ${notification.notificationType}`;
     }
@@ -61,15 +70,40 @@ const NotificationsPage: React.FC = () => {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${idToken}`,
                 }
-            });
-
+            });        
             if (!response.ok) {
                 const errorData = await response.json();
                 throw new Error(errorData.message || '通知リストの取得に失敗しました');
             }
-
-            const data: Notification[] = await response.json();
-            setNotifications(data);
+            const receivedData: unknown = await response.json();
+            console.log(receivedData)
+            let processedNotifications: Notification[] = [];
+            if (Array.isArray(receivedData)) {
+                if (receivedData.every((item: any) =>
+                    typeof item === 'object' && item !== null && 'id' in item && 'notificationType' in item
+                )) {
+                    processedNotifications = receivedData as Notification[];
+                } else {
+                    console.warn("APIから返された配列に不正な形式の要素が含まれています:", receivedData);
+                    setError('通知データに不正な形式の要素が含まれています。');
+                }
+            } else if (typeof receivedData === 'object' && receivedData !== null && 'id' in receivedData && 'notificationType' in receivedData) {
+                const singleNotification = receivedData as Notification;
+                const isEffectivelyEmpty = 
+                    (singleNotification.id === "" || singleNotification.id === undefined || singleNotification.id === null) &&
+                    (singleNotification.postId === "" || singleNotification.postId === undefined || singleNotification.postId === null) &&
+                    (singleNotification.sourceUserId === "" || singleNotification.sourceUserId === undefined || singleNotification.sourceUserId === null) &&
+                    (singleNotification.notificationType === "" || singleNotification.notificationType === undefined || singleNotification.notificationType === null);
+            if (isEffectivelyEmpty) {
+                processedNotifications = [];
+            } else {
+                processedNotifications = [singleNotification];
+            }
+            } else {
+                console.error("APIから返されたデータが期待されるNotification[]形式ではありません:", receivedData);
+                setError('通知データの形式が不正です。');
+            }
+            setNotifications(processedNotifications);
         } catch (err: any) {
             console.error("通知リストの取得エラー:", err);
             setError(err.message || '通知の読み込み中にエラーが発生しました。');
@@ -103,7 +137,7 @@ const NotificationsPage: React.FC = () => {
         if (!notification.isRead) {
             await markAsRead(loginUser,notification.id);
         }
-        navigate(`/post/${notification.sourceUserId}`);
+        navigate(`/post/${notification.postId}`);
     };
 
     return (
@@ -115,19 +149,20 @@ const NotificationsPage: React.FC = () => {
             {!loading && !error && notifications.length === 0 && (
                 <p>新しい通知はありません。</p>
             )}
-
-            <ul className="notification-list">
-                {notifications.map(notification => (
-                    <li
-                        key={notification.id}
-                        className={`notification-item ${notification.isRead ? 'read' : 'unread'}`}
-                        onClick={() => handleNotificationClick(notification)}
-                    >
-                        <p className="notification-message">{generateNotificationMessage(notification)}</p>
-                        <span className="notification-timestamp">{new Date(notification.createdAt).toLocaleString()}</span>
-                    </li>
-                ))}
-            </ul>
+            {!loading && !error && notifications.length > 0 && (
+                <ul className="notification-list">
+                    {notifications.map(notification => (
+                        <li
+                            key={notification.id}
+                            className={`notification-item ${notification.isRead ? 'read' : 'unread'}`}
+                            onClick={() => handleNotificationClick(notification)}
+                        >
+                            <p className="notification-message">{generateNotificationMessage(notification)}</p>
+                            <span className="notification-timestamp">{new Date(notification.createdAt).toLocaleString()}</span>
+                        </li>
+                    ))}
+                </ul>
+            )}
         </div>
     );
 };

@@ -48,14 +48,13 @@ const HomePage: React.FC = () => {
                     'Authorization': `Bearer ${idToken}` 
                 }
             });
-
             if (!response.ok) {
                 const errorData = await response.json();
                 throw new Error(errorData.message || '未読通知数の取得に失敗しました');
             }
-
-            const data = await response.json();
-            setUnreadNotificationsCount(data.count);
+            const data: { unreadCount: number } = await response.json();
+            setUnreadNotificationsCount(data.unreadCount);
+            console.log(data.unreadCount)
         } catch (err: any) {
             console.error("未読通知数の取得エラー:", err);
         }
